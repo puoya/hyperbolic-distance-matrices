@@ -10,7 +10,7 @@ class parameters:
         self.p = 0.1
         self.eps = 0.25
         self.K = .4
-        self.mode = 'Euclidean' # or Euclidean
+        self.mode = 'Euclidean' # Hyperbolic or Euclidean
         self.path = 'results/'
 param = parameters()
 # Load biochemical (odor) component measurements of bluberries in a matrix form
