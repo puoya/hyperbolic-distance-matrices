@@ -1,8 +1,4 @@
-# Section 4.1: Missing Measurements
-
-## Summary
-Summary.
-
+# Section 4.3: Odor Embedding
 
 ## Code
 
