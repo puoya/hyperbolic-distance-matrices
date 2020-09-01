@@ -11,13 +11,25 @@ Summary.
 ```console
 class parameters:
     def __init__(self):
-        self.N = 52
+        self.N = 10
         self.d = 2
-        self.p = 0.005
-        self.eps = 0.25
-        self.K = 4
-        self.space = 'Hyperbolic'
-        self.path = '/results/'
+        self.n_del = 1125
+        self.n_del_list = 0
+        self.delta = 0.9
+        self.bipartite = False
+        self.std = 0
+        self.maxIter = 100
+        self.n_del_init = 0
+        self.path = '../results/weighted_tree_embedding/' 
+        self.solver = ''
+        self.space = 'Hyperbolic' # 'Hyperbolic', 'Euclidean'
+        self.experiment = 'odor_embdding' # 'tree', 'missing_measurements' 'sensitivity'
+        self.load = False
+        self.cost = 'TRACE' # 'TRACE', 'LOG-DET'
+        self.norm = 'fro' # 'l1', 'l2', 'p1', 'fro'
+        self.solver = 'CVXOPT' # 'CVXOPT', 'SCS'
+        self.error_list = 10**(np.linspace(-2, 0, num=5))
+        self.delta_list = 10**(np.linspace(0, -3, num=5))
 param = parameters()
 ```
 - `self.N`: The number of points (52 mono-odor components)
