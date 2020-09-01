@@ -1,6 +1,6 @@
 # Hyperbolic Distance Matrices
 
-This repository provides the source codes for experimental results provided in the [Hyperbolic Distance Matrices](https://arxiv.org/pdf/2005.08672) paper.
+This repository provides the source codes for experimental results provided in the [Hyperbolic Distance Matrices](https://dl.acm.org/doi/abs/10.1145/3394486.3403224) paper.
 
 ## Summary
 The experimental results are divided into the following folders:
