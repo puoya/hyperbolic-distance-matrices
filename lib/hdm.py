@@ -164,3 +164,128 @@ def odor_embedding(C,param):
         #######################################
     return output
 ###########################################################################
+def EDM_metric(param,D, Dn, W):
+    N = param.N
+    d = param.d
+    #######################################
+    output      = EDM_OUT()
+    #######################################
+    con = []
+    G = cvx.Variable((N, N), PSD=True)
+    con.append(G == G.T)
+    con.append(cvx.sum(G,axis = 0) == 0)
+    Dg = htools.gram2edm(G, param, True)
+    cost = cvx.norm( cvx.multiply(W, D-Dg),'fro' )**2
+    #######################################
+    obj = cvx.Minimize(cost)
+    prob = cvx.Problem(obj,con)
+    try:
+        if param.solver == 'CVXOPT':
+            prob.solve(solver=cvx.CVXOPT,verbose=False)
+        else:
+            prob.solve(solver=cvx.SCS,verbose=False)
+    except Exception as message:
+        print(message)
+    output.status = str(prob.status)
+    if str(prob.status) == 'optimal':
+        output.G = G.value
+    else:
+        print(error, 'failed in Euclidean')
+    return output
+###########################################################################
+def HDM_metric(param,D, Dn, W,mode, norm):
+    N = param.N
+    d = param.d
+    #######################################
+    output = HDM_OUT()
+    G_n = htools._cosh(Dn)
+    I = np.eye(N)
+    #######################################
+    error_list = param.error_list
+    delta_list = param.delta_list
+    for error in error_list: 
+        if mode == 'TRACE':
+            Gp = cvx.Variable((N, N), PSD=True)
+            Gn = cvx.Variable((N, N), PSD=True)
+            G = Gp-Gn
+            #######################################
+            con = []
+            if norm == 'l1':
+                con.append( cvx.norm( cvx.multiply(W,G-G_n),1) <= error*W.sum())
+            elif norm == 'l2':
+                con.append( cvx.norm( cvx.multiply(W,G-G_n),2 )**2 <= error)
+            elif norm == 'p1':
+                con.append( cvx.pnorm( cvx.multiply(W,G-G_n),1 ) <= error*W.sum())
+            elif norm == 'fro':
+                con.append( cvx.norm( cvx.multiply(W,G-G_n),'fro' )**2 <= error*W.sum())
+            con.append(cvx.diag(G) == -1)
+            con.append(G <= -1)
+            cost = cvx.trace(Gn)+cvx.trace(Gp)
+            #######################################
+            obj = cvx.Minimize(cost)
+            prob = cvx.Problem(obj,con)
+            try:
+                if param.solver == 'CVXOPT':
+                    prob.solve(solver=cvx.CVXOPT,verbose=False)
+                else:
+                    prob.solve(solver=cvx.SCS,verbose=False)
+            except Exception as message:
+                print(message)
+            output.status = str(prob.status)
+            if str(prob.status) == 'optimal':
+                output.G = Gp.value - Gn.value
+                return output
+            else:
+                print(error, 'failed in TRACE mode')
+        else:
+            Wp = I
+            Wn = I
+            Gn_0 = I
+            Gp_0 = I
+            for delta in delta_list:
+                #######################################
+                Gp = cvx.Variable((N, N), PSD=True)
+                Gp.value = Gp_0
+                Gn = cvx.Variable((N, N), PSD=True)
+                Gn.value = Gn_0
+                G = Gp-Gn
+                #######################################
+                con = []
+                if norm == '1':
+                    con.append( cvx.norm( cvx.multiply(W,G-G_n),1) <= error*W.sum())
+                elif norm == '2':
+                    con.append( cvx.norm( cvx.multiply(W,G-G_n),2 )**2 <= error)
+                elif norm == 'p1':
+                    con.append( cvx.pnorm( cvx.multiply(W,G-G_n),1 ) <= error*W.sum())
+                elif norm == 'fro':
+                    con.append( cvx.norm( cvx.multiply(W,G-G_n),'fro' )**2 <= error*(N**2))
+                con.append(cvx.diag(G) == -1)
+                con.append(G <= -1)
+                #######################################
+                cost = cvx.trace(cvx.matmul(Wp,Gp))+cvx.trace(cvx.matmul(Wn,Gn))
+                #######################################
+                obj = cvx.Minimize(cost)
+                prob = cvx.Problem(obj,con)
+                try:
+                    if param.solver == 'CVXOPT':
+                        prob.solve(solver=cvx.CVXOPT,verbose=False, warm_start=True)
+                    else:
+                        prob.solve(solver=cvx.SCS,verbose=False, warm_start=True)
+                except Exception as message:
+                    print(message)
+                output.status = str(prob.status)
+                if str(prob.status) == 'optimal':
+                    Gp_0 = htools.psd_approx(Gp.value)
+                    Gn_0 = htools.psd_approx(Gn.value)
+                    #######################################
+                    Wn = np.linalg.pinv(Gn_0 + (delta/d)*I)
+                    Wp = np.linalg.pinv(Gp_0 + delta*I)
+                    #######################################
+                    output.G = Gp_0 - Gn_0
+                    if delta == delta_list[-1]:
+                        return output
+                else:
+                    print(error, 'failed in LOG_DET mode')
+                    break
+    return output
+###########################################################################

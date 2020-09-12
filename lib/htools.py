@@ -285,3 +285,65 @@ def d2x(D,param):
         X = loid2poincare(X)
     return X
 ###########################################################################
+def psd_approx(G):
+    w,v = np.linalg.eig(G)
+    #print(w)
+    w=w.real
+    w[w<0] = 0
+    v = v.real
+    G0 = np.matmul(np.matmul(v,np.diag(w)),v.T) 
+    G0 = (G0+G0.T)/2
+    return G0
+###########################################################################
+def tree(grandparents, parent, children, adjM, D):
+        M = len(children)
+        for i in range(M):
+            w = np.random.uniform(0,1,1)
+            c_i = children[i]
+            adjM[parent, c_i] = 1
+            adjM[c_i, parent] = 1
+            D[parent, c_i] = w
+            D[c_i, parent] = w
+            for j in range(len(grandparents)):
+                g_j = grandparents[j]
+                D[g_j,c_i] = D[g_j,parent]+D[parent, c_i]
+                D[c_i,g_j]=D[g_j,c_i]
+        for i in range(M):
+            c_i = children[i]
+            for j in range(M):
+                c_j = children[j]
+                if i != j:
+                    D[c_j, c_i] = D[parent, c_i] + D[parent, c_j]
+                    D[c_i, c_j] = D[c_j, c_i]
+        return adjM, D
+###########################################################################
+def randomTree(param, max_degree):
+    N = param.N
+    adjM = np.zeros((N,N))
+    D = np.zeros((N,N))
+    length = 1
+    node_list = np.arange(0,N)
+    grand_parents = node_list[0:0]
+    child_list = node_list
+    child_list = np.delete(child_list, 0)
+    flag = False
+    length = 1
+    for n in range(N):
+        parent = node_list[n:n+1]
+        grand_parents = np.append(grand_parents, parent)
+        i_max = random.randint(1,max_degree)
+        #max_degree + n//max_degree #
+        if length > N:
+            break
+        if length + i_max > N:
+            i_max = N - length 
+            flag = True
+        length = length + i_max 
+        children = child_list[0:i_max]
+        child_list = np.delete(child_list, range(i_max), None)
+        adjM, D = tree(grand_parents, parent, children, adjM, D)
+        grand_parents = np.append(grand_parents, children)
+        if flag:
+            break
+    return D, adjM
+###########################################################################
