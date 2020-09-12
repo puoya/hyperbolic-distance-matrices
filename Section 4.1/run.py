@@ -16,7 +16,6 @@ class parameters:
         self.maxIter = 100
         self.n_del_init = 0
         self.path = '../results/missing_measurements/' #'../results/sensitivity/'
-        self.solver = ''
         self.experiment = 'missing_measurements' # 'sensitivity'
         self.cost = 'TRACE' # 'TRACE', 'LOG-DET'
         self.norm = 'fro' # 'l1', 'l2', 'p1', 'fro'
