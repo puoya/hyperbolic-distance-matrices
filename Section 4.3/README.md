@@ -18,8 +18,8 @@ param = parameters()
 ```
 - `self.N`: The number of points (52 mono-odor components)
 - `self.d`: The embedding dimension
-- `self.p`: The upper bound on percentage `p` of measured outliers
+- `self.p`: The upper bound on percentage `p` of allowable outliers
 - `self.eps`: A minimum distance threshold to avoid trivial embeddings
-- `self.K`: The number of measurements per variables
+- `self.K`: The number of measurements (binray comparisons) per variables
 - `self.space`: The embedding space: `Hyperbolic` or `Euclidean` 
 - `self.path`: The results are saved in this directory
