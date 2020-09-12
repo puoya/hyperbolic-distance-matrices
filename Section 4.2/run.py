@@ -7,9 +7,8 @@ class parameters:
     def __init__(self):
         self.N = 10
         self.d = 2
-        self.maxIter = 100
         self.path = '../results/tree/'
-        self.space = 'Hyperbolic' # 'Hyperbolic', 'Euclidean'
+        self.space = 'Euclidean' # 'Hyperbolic', 'Euclidean'
         self.cost = 'LOG-DET' 
         self.norm = 'fro' # 'l1', 'l2', 'p1', 'fro'
         self.solver = 'CVXOPT' # 'CVXOPT', 'SCS'
