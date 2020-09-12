@@ -26,6 +26,7 @@ param = parameters()
 - `self.d`: The embedding dimension
 - `self.n_del_init`: The initial number of missing metric measurement
 - `self.n_del`: The number of missing metric measurement (at each iteration)
+- `self.experiment`: The type of experiment: 1) sensitvity of non-metric embedding 2) metric embedding with missing measurements
 - `self.maxIter`: The maximum number of iterations (denoted by M in the paper)
 - `self.cost`: The "Trace" cost function (for hyperbolic and Euclidean embeddings)
 - `self.norm`: The choice of matrix norm to define relative errors
