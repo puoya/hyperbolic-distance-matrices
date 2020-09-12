@@ -23,6 +23,5 @@ def __init__(self):
 - `self.space`: The embedding space: `Hyperbolic` or `Euclidean`
 - `self.cost`: LOG-DET cost function (for hyperbolic embedding)
 - `self.norm`: The choice of norm to define relative errors
-- `self.K`: The number of measurements per variables
 - `self.error_list`: Increasing sequence of tolerable relative error (epsilon) to estimate a valid Gramian 
 - `self.delta_list`: Diminishing sequence of deltas (see specifications of log-det cost function)
