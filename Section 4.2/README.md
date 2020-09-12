@@ -24,4 +24,4 @@ param = parameters()
 - `self.cost`: The LOG-DET cost function (for hyperbolic embedding only)
 - `self.norm`: The choice of matrix norm to define relative errors
 - `self.error_list`: A list of increasing tolerable errors to find an admissible Gramian (denoted by \epsilon in the paper)
-- `self.dela_list`: A list of descreasing regularizer weights (for log-det cost function only) 
+- `self.delta_list`: A list of descreasing regularizer weights (for log-det cost function only) 
