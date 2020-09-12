@@ -347,3 +347,41 @@ def randomTree(param, max_degree):
             break
     return D, adjM
 ###########################################################################
+def edgeCnt(param):
+    N = param.N
+    M = N*(N-1)//2
+    return M
+###########################################################################
+def randX(param):
+    N = param.N
+    d = param.d
+    #######################################
+    X = np.random.normal(0, np.sqrt(N), (d+1,N))
+    for n in range(N):
+        X[0,n] = np.sqrt(1+np.linalg.norm(X[1:d+1,n])**2);
+    return X
+###########################################################################
+def x2hdm(param, X):
+    G = x2hgram(param, X)
+    D = _arccosh(G)
+    return D
+###########################################################################
+def randMask(param):
+    N = param.N
+    W = np.zeros((N,N))
+    n_del = param.n_del
+    M = edgeCnt(param)
+    k = np.random.choice(np.arange(M),size=(n_del), replace = False)
+    ij = np.where(np.tril(np.ones((N,N)), k=-1))
+    for i in k:
+        W[ij[0][i], ij[1][i]] = 1
+    W = 1 - (W+W.T)
+    return W
+###########################################################################
+def test_error(param, D, Gn, mode,W):
+    if mode == 1:
+        Dn = _arccosh(Gn)
+    else:
+        Dn = np.sqrt( gram2edm(Gn, param, False) )
+    eo = np.linalg.norm(np.multiply(W,Dn-D),'fro') / np.linalg.norm(np.multiply(W,D),'fro') 
+    return eo

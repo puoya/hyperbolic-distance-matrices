@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
 import numpy as np
+import site
+site.addsitedir('../lib/') 
 import tree
 ###########################################################################
 class parameters:

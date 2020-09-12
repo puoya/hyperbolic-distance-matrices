@@ -4,8 +4,6 @@
 #import htools
 import numpy as np
 import os
-import site
-site.addsitedir('../lib/') 
 import htools
 import hdm
 def tree_embedding(param,M):
